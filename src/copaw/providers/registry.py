@@ -13,56 +13,44 @@ from .models import CustomProviderData, ModelInfo, ProviderDefinition
 if TYPE_CHECKING:
     from .models import ProvidersData
 
-MODELSCOPE_MODELS: List[ModelInfo] = [
-    ModelInfo(
-        id="Qwen/Qwen3-235B-A22B-Instruct-2507",
-        name="Qwen3-235B-A22B-Instruct-2507",
-    ),
-    ModelInfo(id="deepseek-ai/DeepSeek-V3.2", name="DeepSeek-V3.2"),
+ANTHROPIC_MODELS: List[ModelInfo] = [
+    ModelInfo(id="claude-3-5-sonnet-20241022", name="Claude 3.5 Sonnet"),
+    ModelInfo(id="claude-3-opus-20240229", name="Claude 3 Opus"),
 ]
 
-DASHSCOPE_MODELS: List[ModelInfo] = [
-    ModelInfo(id="qwen3-max", name="Qwen3 Max"),
-    ModelInfo(
-        id="qwen3-235b-a22b-thinking-2507",
-        name="Qwen3 235B A22B Thinking",
-    ),
-    ModelInfo(id="deepseek-v3.2", name="DeepSeek-V3.2"),
+OPENAI_MODELS: List[ModelInfo] = [
+    ModelInfo(id="gpt-4o", name="GPT-4o"),
+    ModelInfo(id="gpt-4o-mini", name="GPT-4o Mini"),
+    ModelInfo(id="gpt-3.5-turbo", name="GPT-3.5 Turbo"),
 ]
 
-ALIYUN_CODINGPLAN_MODELS: List[ModelInfo] = [
-    ModelInfo(id="qwen3.5-plus", name="Qwen3.5 Plus"),
-    ModelInfo(id="glm-5", name="GLM-5"),
-    ModelInfo(id="glm-4.7", name="GLM-4.7"),
-    ModelInfo(id="MiniMax-M2.5", name="MiniMax M2.5"),
-    ModelInfo(id="kimi-k2.5", name="Kimi K2.5"),
-    ModelInfo(id="qwen3-max-2026-01-23", name="Qwen3 Max 2026-01-23"),
-    ModelInfo(id="qwen3-coder-next", name="Qwen3 Coder Next"),
-    ModelInfo(id="qwen3-coder-plus", name="Qwen3 Coder Plus"),
+GOOGLE_MODELS: List[ModelInfo] = [
+    ModelInfo(id="gemini-1.5-pro", name="Gemini 1.5 Pro"),
+    ModelInfo(id="gemini-1.5-flash", name="Gemini 1.5 Flash"),
 ]
 
 PROVIDER_MODELSCOPE = ProviderDefinition(
-    id="modelscope",
-    name="ModelScope",
-    default_base_url="https://api-inference.modelscope.cn/v1",
-    api_key_prefix="ms",
-    models=MODELSCOPE_MODELS,
+    id="anthropic",
+    name="Anthropic",
+    default_base_url="https://api.anthropic.com/v1",
+    api_key_prefix="sk-ant",
+    models=ANTHROPIC_MODELS,
 )
 
 PROVIDER_DASHSCOPE = ProviderDefinition(
-    id="dashscope",
-    name="DashScope",
-    default_base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
+    id="openai",
+    name="OpenAI",
+    default_base_url="https://api.openai.com/v1",
     api_key_prefix="sk",
-    models=DASHSCOPE_MODELS,
+    models=OPENAI_MODELS,
 )
 
 PROVIDER_ALIYUN_CODINGPLAN = ProviderDefinition(
-    id="aliyun-codingplan",
-    name="Aliyun Coding Plan",
-    default_base_url="https://coding.dashscope.aliyuncs.com/v1",
-    api_key_prefix="sk-sp",
-    models=ALIYUN_CODINGPLAN_MODELS,
+    id="google",
+    name="Google",
+    default_base_url="https://generativelanguage.googleapis.com/v1beta",
+    api_key_prefix="AIza",
+    models=GOOGLE_MODELS,
 )
 
 PROVIDER_LLAMACPP = ProviderDefinition(
@@ -93,9 +81,9 @@ PROVIDER_OLLAMA = ProviderDefinition(
 
 _BUILTIN_IDS: frozenset[str] = frozenset(
     [
-        "modelscope",
-        "dashscope",
-        "aliyun-codingplan",
+        "anthropic",
+        "openai",
+        "google",
         "ollama",
         "llamacpp",
         "mlx",

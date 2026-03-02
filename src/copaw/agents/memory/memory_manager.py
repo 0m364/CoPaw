@@ -571,11 +571,11 @@ class MemoryManager(ReMeFb):
         embedding_api_key = os.environ.get("EMBEDDING_API_KEY", "")
         embedding_base_url = os.environ.get(
             "EMBEDDING_BASE_URL",
-            "https://dashscope.aliyuncs.com/compatible-mode/v1",
+            "https://api.openai.com/v1",
         )
         embedding_model_name = os.environ.get(
             "EMBEDDING_MODEL_NAME",
-            "text-embedding-v4",
+            "text-embedding-3-small",
         )
         embedding_dimensions = MemoryManager._safe_int(
             os.environ.get("EMBEDDING_DIMENSIONS"),

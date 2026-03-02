@@ -63,7 +63,7 @@ MEMORY_COMPACT_RATIO = float(
 
 DASHSCOPE_BASE_URL = os.environ.get(
     "DASHSCOPE_BASE_URL",
-    "https://dashscope.aliyuncs.com/compatible-mode/v1",
+    "https://api.openai.com/v1",
 )
 
 # CORS configuration — comma-separated list of allowed origins for dev mode.

@@ -542,7 +542,7 @@ def remove_model_cmd(provider_id: str, model_id: str) -> None:
 @click.option(
     "--source",
     "-s",
-    type=click.Choice(["huggingface", "modelscope"]),
+    type=click.Choice(["huggingface"]),
     default="huggingface",
     help="Download source",
 )
@@ -552,14 +552,13 @@ def download_cmd(
     backend: str,
     source: str,
 ) -> None:
-    """Download a model from Hugging Face Hub or ModelScope.
+    """Download a model from Hugging Face Hub.
 
     \b
     Examples:
       copaw models download TheBloke/Mistral-7B-Instruct-v0.2-GGUF
       copaw models download TheBloke/Mistral-7B-Instruct-v0.2-GGUF \\
           -f mistral-7b-instruct-v0.2.Q4_K_M.gguf
-      copaw models download Qwen/Qwen2-0.5B-Instruct-GGUF --source modelscope
     """
     try:
         from ..local_models import (

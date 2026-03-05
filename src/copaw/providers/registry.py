@@ -13,33 +13,8 @@ from .models import CustomProviderData, ModelInfo, ProviderDefinition
 if TYPE_CHECKING:
     from .models import ProvidersData
 
-MODELSCOPE_MODELS: List[ModelInfo] = [
-    ModelInfo(
-        id="Qwen/Qwen3-235B-A22B-Instruct-2507",
-        name="Qwen3-235B-A22B-Instruct-2507",
-    ),
-    ModelInfo(id="deepseek-ai/DeepSeek-V3.2", name="DeepSeek-V3.2"),
-]
 
-DASHSCOPE_MODELS: List[ModelInfo] = [
-    ModelInfo(id="qwen3-max", name="Qwen3 Max"),
-    ModelInfo(
-        id="qwen3-235b-a22b-thinking-2507",
-        name="Qwen3 235B A22B Thinking",
-    ),
-    ModelInfo(id="deepseek-v3.2", name="DeepSeek-V3.2"),
-]
 
-ALIYUN_CODINGPLAN_MODELS: List[ModelInfo] = [
-    ModelInfo(id="qwen3.5-plus", name="Qwen3.5 Plus"),
-    ModelInfo(id="glm-5", name="GLM-5"),
-    ModelInfo(id="glm-4.7", name="GLM-4.7"),
-    ModelInfo(id="MiniMax-M2.5", name="MiniMax M2.5"),
-    ModelInfo(id="kimi-k2.5", name="Kimi K2.5"),
-    ModelInfo(id="qwen3-max-2026-01-23", name="Qwen3 Max 2026-01-23"),
-    ModelInfo(id="qwen3-coder-next", name="Qwen3 Coder Next"),
-    ModelInfo(id="qwen3-coder-plus", name="Qwen3 Coder Plus"),
-]
 
 OPENAI_MODELS: List[ModelInfo] = [
     ModelInfo(id="gpt-5-chat", name="GPT-5 Chat"),
@@ -65,29 +40,8 @@ AZURE_OPENAI_MODELS: List[ModelInfo] = [
     ModelInfo(id="gpt-4o-mini", name="GPT-4o Mini"),
 ]
 
-PROVIDER_MODELSCOPE = ProviderDefinition(
-    id="modelscope",
-    name="ModelScope",
-    default_base_url="https://api-inference.modelscope.cn/v1",
-    api_key_prefix="ms",
-    models=MODELSCOPE_MODELS,
-)
 
-PROVIDER_DASHSCOPE = ProviderDefinition(
-    id="dashscope",
-    name="DashScope",
-    default_base_url="https://dashscope.aliyuncs.com/compatible-mode/v1",
-    api_key_prefix="sk",
-    models=DASHSCOPE_MODELS,
-)
 
-PROVIDER_ALIYUN_CODINGPLAN = ProviderDefinition(
-    id="aliyun-codingplan",
-    name="Aliyun Coding Plan",
-    default_base_url="https://coding.dashscope.aliyuncs.com/v1",
-    api_key_prefix="sk-sp",
-    models=ALIYUN_CODINGPLAN_MODELS,
-)
 
 PROVIDER_LLAMACPP = ProviderDefinition(
     id="llamacpp",
@@ -133,9 +87,6 @@ PROVIDER_OLLAMA = ProviderDefinition(
 
 _BUILTIN_IDS: frozenset[str] = frozenset(
     [
-        "modelscope",
-        "dashscope",
-        "aliyun-codingplan",
         "openai",
         "azure-openai",
         "ollama",
@@ -145,9 +96,6 @@ _BUILTIN_IDS: frozenset[str] = frozenset(
 )
 
 PROVIDERS: dict[str, ProviderDefinition] = {
-    PROVIDER_MODELSCOPE.id: PROVIDER_MODELSCOPE,
-    PROVIDER_DASHSCOPE.id: PROVIDER_DASHSCOPE,
-    PROVIDER_ALIYUN_CODINGPLAN.id: PROVIDER_ALIYUN_CODINGPLAN,
     PROVIDER_OPENAI.id: PROVIDER_OPENAI,
     PROVIDER_AZURE_OPENAI.id: PROVIDER_AZURE_OPENAI,
     PROVIDER_OLLAMA.id: PROVIDER_OLLAMA,

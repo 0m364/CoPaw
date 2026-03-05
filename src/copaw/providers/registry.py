@@ -15,34 +15,6 @@ if TYPE_CHECKING:
 
 
 
-
-OPENAI_MODELS: List[ModelInfo] = [
-    ModelInfo(id="gpt-5-chat", name="GPT-5 Chat"),
-    ModelInfo(id="gpt-5-mini", name="GPT-5 Mini"),
-    ModelInfo(id="gpt-5-nano", name="GPT-5 Nano"),
-    ModelInfo(id="gpt-4.1", name="GPT-4.1"),
-    ModelInfo(id="gpt-4.1-mini", name="GPT-4.1 Mini"),
-    ModelInfo(id="gpt-4.1-nano", name="GPT-4.1 Nano"),
-    ModelInfo(id="o3", name="o3"),
-    ModelInfo(id="o4-mini", name="o4-mini"),
-    ModelInfo(id="gpt-4o", name="GPT-4o"),
-    ModelInfo(id="gpt-4o-mini", name="GPT-4o Mini"),
-]
-
-AZURE_OPENAI_MODELS: List[ModelInfo] = [
-    ModelInfo(id="gpt-5-chat", name="GPT-5 Chat"),
-    ModelInfo(id="gpt-5-mini", name="GPT-5 Mini"),
-    ModelInfo(id="gpt-5-nano", name="GPT-5 Nano"),
-    ModelInfo(id="gpt-4.1", name="GPT-4.1"),
-    ModelInfo(id="gpt-4.1-mini", name="GPT-4.1 Mini"),
-    ModelInfo(id="gpt-4.1-nano", name="GPT-4.1 Nano"),
-    ModelInfo(id="gpt-4o", name="GPT-4o"),
-    ModelInfo(id="gpt-4o-mini", name="GPT-4o Mini"),
-]
-
-
-
-
 PROVIDER_LLAMACPP = ProviderDefinition(
     id="llamacpp",
     name="llama.cpp (Local)",
@@ -87,8 +59,7 @@ PROVIDER_OLLAMA = ProviderDefinition(
 
 _BUILTIN_IDS: frozenset[str] = frozenset(
     [
-        "openai",
-        "azure-openai",
+
         "ollama",
         "llamacpp",
         "mlx",

@@ -262,7 +262,7 @@ def _create_remote_model_instance(
     """
     # Get configuration from llm_cfg or fall back to environment
     if llm_cfg and (llm_cfg.api_key or llm_cfg.base_url):
-        model_name = llm_cfg.model or "gpt-4o"
+
         api_key = llm_cfg.api_key
         base_url = llm_cfg.base_url
     else:
@@ -270,7 +270,7 @@ def _create_remote_model_instance(
             "No active LLM configured — "
             "falling back to OPENAI_API_KEY env var",
         )
-        model_name = "gpt-4o"
+
         api_key = os.getenv("OPENAI_API_KEY", "")
         base_url = "https://api.openai.com/v1"
 

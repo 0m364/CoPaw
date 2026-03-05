@@ -16,7 +16,6 @@ class BackendType(str, Enum):
 
 class DownloadSource(str, Enum):
     HUGGINGFACE = "huggingface"
-    MODELSCOPE = "modelscope"
 
 
 class LocalModelInfo(BaseModel):

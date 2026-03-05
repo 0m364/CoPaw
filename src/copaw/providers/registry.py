@@ -13,45 +13,7 @@ from .models import CustomProviderData, ModelInfo, ProviderDefinition
 if TYPE_CHECKING:
     from .models import ProvidersData
 
-ANTHROPIC_MODELS: List[ModelInfo] = [
-    ModelInfo(id="claude-3-5-sonnet-20241022", name="Claude 3.5 Sonnet"),
-    ModelInfo(id="claude-3-opus-20240229", name="Claude 3 Opus"),
-]
 
-OPENAI_MODELS: List[ModelInfo] = [
-    ModelInfo(id="gpt-4o", name="GPT-4o"),
-    ModelInfo(id="gpt-4o-mini", name="GPT-4o Mini"),
-    ModelInfo(id="gpt-3.5-turbo", name="GPT-3.5 Turbo"),
-]
-
-GOOGLE_MODELS: List[ModelInfo] = [
-    ModelInfo(id="gemini-1.5-pro", name="Gemini 1.5 Pro"),
-    ModelInfo(id="gemini-1.5-flash", name="Gemini 1.5 Flash"),
-]
-
-PROVIDER_MODELSCOPE = ProviderDefinition(
-    id="anthropic",
-    name="Anthropic",
-    default_base_url="https://api.anthropic.com/v1",
-    api_key_prefix="sk-ant",
-    models=ANTHROPIC_MODELS,
-)
-
-PROVIDER_DASHSCOPE = ProviderDefinition(
-    id="openai",
-    name="OpenAI",
-    default_base_url="https://api.openai.com/v1",
-    api_key_prefix="sk",
-    models=OPENAI_MODELS,
-)
-
-PROVIDER_ALIYUN_CODINGPLAN = ProviderDefinition(
-    id="google",
-    name="Google",
-    default_base_url="https://generativelanguage.googleapis.com/v1beta",
-    api_key_prefix="AIza",
-    models=GOOGLE_MODELS,
-)
 
 PROVIDER_LLAMACPP = ProviderDefinition(
     id="llamacpp",
@@ -71,6 +33,22 @@ PROVIDER_MLX = ProviderDefinition(
     is_local=True,
 )
 
+PROVIDER_OPENAI = ProviderDefinition(
+    id="openai",
+    name="OpenAI",
+    default_base_url="https://api.openai.com/v1",
+    api_key_prefix="sk-",
+    models=OPENAI_MODELS,
+)
+
+PROVIDER_AZURE_OPENAI = ProviderDefinition(
+    id="azure-openai",
+    name="Azure OpenAI",
+    default_base_url="",
+    api_key_prefix="",
+    models=AZURE_OPENAI_MODELS,
+)
+
 PROVIDER_OLLAMA = ProviderDefinition(
     id="ollama",
     name="Ollama",
@@ -81,9 +59,7 @@ PROVIDER_OLLAMA = ProviderDefinition(
 
 _BUILTIN_IDS: frozenset[str] = frozenset(
     [
-        "anthropic",
-        "openai",
-        "google",
+
         "ollama",
         "llamacpp",
         "mlx",
@@ -91,9 +67,8 @@ _BUILTIN_IDS: frozenset[str] = frozenset(
 )
 
 PROVIDERS: dict[str, ProviderDefinition] = {
-    PROVIDER_MODELSCOPE.id: PROVIDER_MODELSCOPE,
-    PROVIDER_DASHSCOPE.id: PROVIDER_DASHSCOPE,
-    PROVIDER_ALIYUN_CODINGPLAN.id: PROVIDER_ALIYUN_CODINGPLAN,
+    PROVIDER_OPENAI.id: PROVIDER_OPENAI,
+    PROVIDER_AZURE_OPENAI.id: PROVIDER_AZURE_OPENAI,
     PROVIDER_OLLAMA.id: PROVIDER_OLLAMA,
     PROVIDER_LLAMACPP.id: PROVIDER_LLAMACPP,
     PROVIDER_MLX.id: PROVIDER_MLX,

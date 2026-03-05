@@ -670,9 +670,6 @@ async def test_provider_connection(
         # Provider-specific fallback models
         fallback_models = {
             "openai": "gpt-3.5-turbo",
-            "dashscope": "qwen-max",
-            "modelscope": "Qwen/Qwen3-235B-A22B-Instruct-2507",
-            "aliyun-codingplan": "qwen3.5-plus",
         }
         test_model = fallback_models.get(provider_id, "gpt-3.5-turbo")
 

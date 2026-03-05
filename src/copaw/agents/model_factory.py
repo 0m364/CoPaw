@@ -262,17 +262,17 @@ def _create_remote_model_instance(
     """
     # Get configuration from llm_cfg or fall back to environment
     if llm_cfg and (llm_cfg.api_key or llm_cfg.base_url):
-        model_name = llm_cfg.model or "qwen3-max"
+        model_name = llm_cfg.model or "gpt-4o-mini"
         api_key = llm_cfg.api_key
         base_url = llm_cfg.base_url
     else:
         logger.warning(
             "No active LLM configured — "
-            "falling back to DASHSCOPE_API_KEY env var",
+            "falling back to OPENAI_API_KEY env var",
         )
-        model_name = "qwen3-max"
-        api_key = os.getenv("DASHSCOPE_API_KEY", "")
-        base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+        model_name = "gpt-4o-mini"
+        api_key = os.getenv("OPENAI_API_KEY", "")
+        base_url = "https://api.openai.com/v1"
 
     # Instantiate model
     model = chat_model_class(

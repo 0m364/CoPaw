@@ -18,11 +18,7 @@ from typing import Any
 
 from agentscope._utils._common import _save_base64_data
 from agentscope.agent import ReActAgent
-from agentscope.formatter import DashScopeChatFormatter
-from agentscope.formatter._dashscope_formatter import (
-    _format_dashscope_media_block,
-    _reformat_messages,
-)
+from agentscope.formatter import OpenAIChatFormatter
 from agentscope.formatter._formatter_base import FormatterBase
 from agentscope.message import (
     ImageBlock,
@@ -71,10 +67,10 @@ def _truncate_text(text: str, max_length: int | None = None) -> str:
     return _truncate_text_impl(text, max_length)
 
 
-class TimestampedDashScopeChatFormatter(DashScopeChatFormatter):
-    """DashScope formatter that includes timestamp in formatted messages.
+class TimestampedOpenAIChatFormatter(OpenAIChatFormatter):
+    """OpenAI formatter that includes timestamp in formatted messages.
 
-    Extends DashScopeChatFormatter to add the timestamp to each formatted
+    Extends OpenAIChatFormatter to add the timestamp to each formatted
     message as a 'time_created' field. Also supports file blocks.
     """
 
@@ -192,7 +188,7 @@ class TimestampedDashScopeChatFormatter(DashScopeChatFormatter):
         self,
         msgs: list[Msg],
     ) -> list[dict[str, Any]]:
-        """Format message objects into DashScope API format with timestamps.
+        """Format message objects into OpenAI API format with timestamps.
 
         Messages are processed in reverse order (newest first) and older
         messages are skipped when token count exceeds memory_compact_threshold.
@@ -230,11 +226,23 @@ class TimestampedDashScopeChatFormatter(DashScopeChatFormatter):
                     msg_token_count += safe_count_str_tokens(text_content)
 
                 elif typ in ["image", "audio", "video"]:
-                    content_blocks.append(
-                        _format_dashscope_media_block(
-                            block,  # type: ignore[arg-type]
-                        ),
-                    )
+                    # For OpenAI, media blocks format can be simplified or delegated
+                    # OpenAI chat completion schema often doesn't directly support audio/video
+                    # but we keep it here and let the base format logic handle it if supported.
+                    # Since OpenAIChatFormatter might not have `_format_dashscope_media_block`,
+                    # we do a basic structural copy for media.
+                    if typ == "image":
+                        source = block.get("source", {})
+                        if source.get("type") == "url":
+                            content_blocks.append({"type": "image_url", "image_url": {"url": source.get("url")}})
+                        elif source.get("type") == "base64":
+                            data = source.get("data")
+                            media_type = source.get("media_type", "image/jpeg")
+                            content_blocks.append({"type": "image_url", "image_url": {"url": f"data:{media_type};base64,{data}"}})
+                    else:
+                        content_blocks.append(
+                            {"type": "text", "text": f"[{typ} block]"}
+                        )
                     # Estimate fixed token cost for media
                     msg_token_count += 100
 
@@ -265,7 +273,7 @@ class TimestampedDashScopeChatFormatter(DashScopeChatFormatter):
                     textual_output = _truncate_text(textual_output)
                     msg_token_count += safe_count_str_tokens(textual_output)
 
-                    # First add the tool result message in DashScope API format
+                    # First add the tool result message in OpenAI API format
                     formatted_msgs.append(
                         {
                             "role": "tool",
@@ -374,11 +382,18 @@ class TimestampedDashScopeChatFormatter(DashScopeChatFormatter):
                                     },
                                 )
                             elif promoted_typ in ["image", "audio", "video"]:
-                                promoted_content_blocks.append(
-                                    _format_dashscope_media_block(
-                                        promoted_block_dict,
-                                    ),
-                                )
+                                if promoted_typ == "image":
+                                    source = promoted_block_dict.get("source", {})
+                                    if source.get("type") == "url":
+                                        promoted_content_blocks.append({"type": "image_url", "image_url": {"url": source.get("url")}})
+                                    elif source.get("type") == "base64":
+                                        data = source.get("data")
+                                        media_type = source.get("media_type", "image/jpeg")
+                                        promoted_content_blocks.append({"type": "image_url", "image_url": {"url": f"data:{media_type};base64,{data}"}})
+                                else:
+                                    promoted_content_blocks.append(
+                                        {"type": "text", "text": f"[{promoted_typ} block]"}
+                                    )
 
                         # Add the promoted user message to formatted_msgs
                         formatted_msgs.append(
@@ -394,14 +409,14 @@ class TimestampedDashScopeChatFormatter(DashScopeChatFormatter):
                         typ,
                     )
 
-            msg_dashscope = {
+            msg_openai = {
                 "role": msg.role,
                 "content": content_blocks,
                 "time_created": msg.timestamp,  # Add timestamp here
             }
 
             if tool_calls:
-                msg_dashscope["tool_calls"] = tool_calls
+                msg_openai["tool_calls"] = tool_calls
 
             total_token_count += msg_token_count
             # Check if adding this message would exceed threshold
@@ -414,7 +429,7 @@ class TimestampedDashScopeChatFormatter(DashScopeChatFormatter):
                 )
                 break
 
-            formatted_msgs.append(msg_dashscope)
+            formatted_msgs.append(msg_openai)
 
             # Move to previous message
             i -= 1
@@ -422,7 +437,7 @@ class TimestampedDashScopeChatFormatter(DashScopeChatFormatter):
         # Reverse to restore chronological order
         formatted_msgs.reverse()
 
-        return _reformat_messages(formatted_msgs)
+        return formatted_msgs
 
 
 # Try to import reme, log warning if it fails
@@ -571,11 +586,11 @@ class MemoryManager(ReMeFb):
         embedding_api_key = os.environ.get("EMBEDDING_API_KEY", "")
         embedding_base_url = os.environ.get(
             "EMBEDDING_BASE_URL",
-            "https://dashscope.aliyuncs.com/compatible-mode/v1",
+            "https://api.openai.com/v1",
         )
         embedding_model_name = os.environ.get(
             "EMBEDDING_MODEL_NAME",
-            "text-embedding-v4",
+            "text-embedding-3-small",
         )
         embedding_dimensions = MemoryManager._safe_int(
             os.environ.get("EMBEDDING_DIMENSIONS"),
@@ -668,7 +683,7 @@ class MemoryManager(ReMeFb):
         """
         self.update_emb_envs()
 
-        formatter = TimestampedDashScopeChatFormatter(
+        formatter = TimestampedOpenAIChatFormatter(
             memory_compact_threshold=self._memory_compact_threshold,
         )
         if not messages_to_summarize and not turn_prefix_messages:
@@ -772,7 +787,7 @@ class MemoryManager(ReMeFb):
         """Generate a summary of the given messages."""
         self.update_emb_envs()
 
-        formatter = TimestampedDashScopeChatFormatter(
+        formatter = TimestampedOpenAIChatFormatter(
             memory_compact_threshold=self._memory_compact_threshold,
         )
         messages = await formatter.format(messages)

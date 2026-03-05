@@ -27,7 +27,7 @@ router = APIRouter(prefix="/local-models", tags=["local-models"])
 
 
 class DownloadRequest(BaseModel):
-    repo_id: str = Field(..., description="Hugging Face or ModelScope repo ID")
+    repo_id: str = Field(..., description="Hugging Face repo ID")
     filename: Optional[str] = Field(
         None,
         description="Specific file to download",
@@ -35,7 +35,7 @@ class DownloadRequest(BaseModel):
     backend: str = Field("llamacpp", description="Backend: llamacpp or mlx")
     source: str = Field(
         "huggingface",
-        description="Source: huggingface or modelscope",
+        description="Source: huggingface",
     )
 
 

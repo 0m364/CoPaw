@@ -112,13 +112,6 @@ class LocalModelManager:
                 filename,
                 backend,
             )
-        elif source == DownloadSource.MODELSCOPE:
-            return LocalModelManager._download_from_modelscope(
-                repo_id,
-                filename,
-                backend,
-            )
-        else:
             raise ValueError(f"Unknown download source: {source}")
 
     @staticmethod
@@ -181,61 +174,6 @@ class LocalModelManager:
             filename,
             backend,
             DownloadSource.HUGGINGFACE,
-            downloaded_path,
-        )
-
-    @staticmethod
-    def _download_from_modelscope(
-        repo_id: str,
-        filename: Optional[str],
-        backend: BackendType,
-    ) -> LocalModelInfo:
-        try:
-            from modelscope.hub.file_download import model_file_download
-        except ImportError as e:
-            raise ImportError(
-                "modelscope is required for ModelScope downloads. "
-                "Install it with: pip install modelscope",
-            ) from e
-
-        _ensure_models_dir()
-
-        if filename is None:
-            try:
-                from modelscope.hub.api import HubApi
-
-                api = HubApi()
-                files = [
-                    f["Path"]
-                    for f in api.get_model_files(repo_id)
-                    if isinstance(f, dict) and "Path" in f
-                ]
-            except Exception as e:
-                raise ValueError(
-                    f"Cannot list files for {repo_id} on ModelScope. "
-                    "Please specify the filename explicitly.",
-                ) from e
-            filename = LocalModelManager._auto_select_file(files, backend)
-
-        local_dir = MODELS_DIR / _sanitize_repo_id(repo_id)
-        local_dir.mkdir(parents=True, exist_ok=True)
-
-        logger.info(
-            "Downloading %s/%s from ModelScope...",
-            repo_id,
-            filename,
-        )
-        downloaded_path = model_file_download(
-            model_id=repo_id,
-            file_path=filename,
-            local_dir=str(local_dir),
-        )
-
-        return LocalModelManager._register_model(
-            repo_id,
-            filename,
-            backend,
-            DownloadSource.MODELSCOPE,
             downloaded_path,
         )
 
